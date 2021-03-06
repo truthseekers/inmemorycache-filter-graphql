@@ -9,7 +9,7 @@ const resolvers = {
     songs: (parent, args, context, info) => {
       if (args.filter) {
         const filteredSongs = songs.filter((song) => {
-          return song.title.includes(args.filter);
+          return song.title.toLowerCase().includes(args.filter.toLowerCase());
         });
         return filteredSongs;
       }
