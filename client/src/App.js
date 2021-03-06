@@ -1,41 +1,31 @@
 import "./App.css";
-import React, { useState, Fragment, useEffect } from "react";
-import { useQuery, gql } from "@apollo/client";
+import React, { useState } from "react";
+import { useQuery } from "@apollo/client";
+import { useDeleteSongItem } from "./hooks";
+import { FILTERED_SONGS } from "./graphql/queries";
 
-// const SONGS = gql`
-//   query {
-//     songs {
-//       id
-//       title
-//     }
-//   }
-// `;
+function SongRow(props) {
+  const deleteSongRow = () => {
+    props.deleteSong({
+      variables: { songId: props.songId },
+    });
+  };
 
-const SONGS = gql`
-  query songs($filter: String) {
-    songs(filter: $filter) {
-      id
-      title
-    }
-  }
-`;
+  return (
+    <li key={props.songId}>
+      {props.title} <span onClick={deleteSongRow}>delete</span>
+    </li>
+  );
+}
 
 function App() {
   const [filter, setFilter] = useState("");
-  const { data, loading, error } = useQuery(SONGS, {
+  const { data, loading, error } = useQuery(FILTERED_SONGS, {
     variables: { filter: filter },
   });
+  const { deleteSong } = useDeleteSongItem(filter);
 
-  // if (loading) {
-  //   return <div>loading...</div>;
-  // }
-  // if (error) {
-  //   return <div>error...</div>;
-  // }
-  // console.log("data: ", data);
-  // data.songs.map((song) => {
-  //   console.log("song title: ", song.title);
-  // });
+  // const songList = data.songs;
 
   return (
     <div className="App">
@@ -51,9 +41,12 @@ function App() {
         ) : (
           <ul>
             {data.songs.map((song) => (
-              <li key={song.id}>
-                <h2>{song.title}</h2>
-              </li>
+              <SongRow
+                deleteSong={deleteSong}
+                key={song.id}
+                songId={song.id}
+                title={song.title}
+              />
             ))}
           </ul>
         )}
