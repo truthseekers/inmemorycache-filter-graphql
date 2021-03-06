@@ -2,7 +2,12 @@ import "./App.css";
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useDeleteSongItem } from "./hooks";
-import { FILTERED_SONGS } from "./graphql/queries";
+import {
+  CLIENT_SIDE_FILTERED_SONGS,
+  FILTERED_SONGS,
+  SONGS,
+} from "./graphql/queries";
+import { filter } from "./index";
 
 function SongRow(props) {
   const deleteSongRow = () => {
@@ -19,13 +24,15 @@ function SongRow(props) {
 }
 
 function App() {
-  const [filter, setFilter] = useState("");
-  const { data, loading, error } = useQuery(FILTERED_SONGS, {
-    variables: { filter: filter },
-  });
+  const [filterInput, setFilterInput] = useState("");
+  const { data, loading, error } = useQuery(CLIENT_SIDE_FILTERED_SONGS);
+
   const { deleteSong } = useDeleteSongItem(filter);
 
-  // const songList = data.songs;
+  const handleFilterInput = (newInput) => {
+    setFilterInput(newInput);
+    filter(newInput);
+  };
 
   return (
     <div className="App">
@@ -33,14 +40,14 @@ function App() {
         <h3>Fav songs:</h3>
         <input
           type="text"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
+          value={filterInput}
+          onChange={(e) => handleFilterInput(e.target.value)}
         />
         {!data || loading ? (
           <div>loading...</div>
         ) : (
           <ul>
-            {data.songs.map((song) => (
+            {data.filteredSongs.map((song) => (
               <SongRow
                 deleteSong={deleteSong}
                 key={song.id}

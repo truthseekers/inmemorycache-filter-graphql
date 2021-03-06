@@ -7,8 +7,33 @@ import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 
 const client = new ApolloClient({
   uri: "http://localhost:4000",
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          filteredSongs: (existing, { args, readField }) => {
+            const currentFilter = filter();
+
+            const songs = [...(readField("songs") || [])];
+            console.log("songs: ", songs);
+
+            let filteredSongs = songs.filter((elem) => {
+              const titleOfSong = readField("title", elem);
+
+              return titleOfSong
+                .toLowerCase()
+                .includes(currentFilter.toLowerCase());
+            });
+
+            return filteredSongs;
+          },
+        },
+      },
+    },
+  }),
 });
+
+export const filter = client.cache.makeVar("");
 
 ReactDOM.render(
   <React.StrictMode>
