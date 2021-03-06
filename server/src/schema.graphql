@@ -1,0 +1,13 @@
+type Query {
+  songs(filter: String): [Song!]!
+}
+
+type Mutation {
+  createSong(title: String!): Song
+  deleteSong(songId: ID!): Song
+}
+
+type Song {
+  id: ID!
+  title: String!
+}
