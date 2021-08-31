@@ -2,8 +2,6 @@
 
 ## [Please support our YouTube channel by Subscribing!](https://www.youtube.com/channel/UCa0s8d-23qP7RmIMZ54x7Ug)
 
-## [Heal our planet AND progress society at the same time?](https://truthseekers.io/support-nuclear/)
-
 ### Develop your skills with our high quality tutorials on:
 
 Linux, Docker & Kubernetes, React.js, GraphQL, SQL, Mongo, Emacs & more. Literally anything tech.
